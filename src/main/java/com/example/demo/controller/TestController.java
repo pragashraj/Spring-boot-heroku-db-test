@@ -27,4 +27,14 @@ public class TestController {
             return "No user";
         return "username: " + userRepository.getById((long) 1);
     }
+
+    @RequestMapping("create")
+    public String create() {
+        User user = User
+                .builder()
+                .name("steve")
+                .build();
+        userRepository.save(user);
+        return "created";
+    }
 }
