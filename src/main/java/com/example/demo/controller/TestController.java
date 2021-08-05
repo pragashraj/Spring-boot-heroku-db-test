@@ -23,7 +23,8 @@ public class TestController {
     @RequestMapping("get")
     public String getUser() {
         User user = userRepository.getById((long) 1);
-        System.out.println(user);
+        if (user == null)
+            return "No user";
         return "username: " + userRepository.getById((long) 1);
     }
 }
