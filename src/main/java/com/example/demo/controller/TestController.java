@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/test/")
 public class TestController {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public TestController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @RequestMapping("welcome")
     public String welcome() {
@@ -22,18 +26,19 @@ public class TestController {
 
     @RequestMapping("get")
     public String getUser() {
-        User user = userRepository.getById((long) 1);
-        if (user == null)
-            return "No user";
-        return "username: " + userRepository.getById((long) 1);
+        try {
+            User user = userRepository.findByName("admin");
+            if (user == null)
+                return "No user";
+            return "username: " + user.getName();
+        } catch (Exception e) {
+            return "error";
+        }
     }
 
     @RequestMapping("create")
     public String create() {
-        User user = User
-                .builder()
-                .name("steve")
-                .build();
+        User user = new User("admin");
         userRepository.save(user);
         return "created";
     }
