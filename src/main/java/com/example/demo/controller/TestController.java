@@ -38,7 +38,7 @@ public class TestController {
 
     @RequestMapping("create")
     public String create() {
-        User user = new User("admin");
+        User user = User.builder().name("admin").build();
         userRepository.save(user);
         return "created";
     }
