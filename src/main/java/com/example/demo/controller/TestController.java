@@ -1,45 +1,33 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.CustomerRepository;
+import com.example.demo.usecases.WelcomeUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/test/")
 public class TestController {
-
-    private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    public TestController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public TestController(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
-    @RequestMapping("welcome")
+    @GetMapping("welcome")
     public String welcome() {
-        return "Hello there";
-    }
-
-    @RequestMapping("get")
-    public String getUser() {
         try {
-            User user = userRepository.findByName("admin");
-            if (user == null)
-                return "No user";
-            return "username: " + user.getName();
+            WelcomeUseCase useCase = new WelcomeUseCase(customerRepository);
+            return useCase.execute();
         } catch (Exception e) {
-            return "error";
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-    }
-
-    @RequestMapping("create")
-    public String create() {
-        User user = User.builder().name("admin").build();
-        userRepository.save(user);
-        return "created";
     }
 }
