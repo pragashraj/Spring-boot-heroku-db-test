@@ -24,7 +24,7 @@ public class TestController {
     @GetMapping("welcome")
     public String welcome() {
         try {
-            WelcomeUseCase useCase = new WelcomeUseCase(customerRepository);
+            WelcomeUseCase useCase = new WelcomeUseCase();
             return useCase.execute();
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
